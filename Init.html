@@ -5,7 +5,8 @@
         
             safari.application.addEventListener('command', performCommand, false);
             safari.application.addEventListener('message', handleMessage, false);
-
+            safari.application.addEventListener('validate', validateCommand, false);
+            
             function performCommand(event) {
                 var message = '';
                 
@@ -25,7 +26,15 @@
             }
 
 
+            /**
+             *  This handler is called every time a context menu has been clicked with some text selected
+             **/
             function handleMessage(msg) {
+                //ignore empty requests
+                if(!msg.message){
+                    return;
+                }
+                
                 var url = '';
                 
                 switch(msg.name){
@@ -40,8 +49,35 @@
                     }
                 }        
                 
-                safari.application.activeBrowserWindow.openTab().url = url;      
-            }            
+                if(url){
+                    safari.application.activeBrowserWindow.openTab().url = url;      
+                }
+            }       
+            
+
+            /**
+             *  Function to either hide context menu items when there is no text selected
+             *  and/or alter the menu title according to the selected text
+             **/            
+            function validateCommand(event) {
+                var query = event.userInfo;
+                if (query.length == 0 || !query) {
+                    event.target.disabled = true;
+                    return;
+                }
+                
+                switch(event.command){
+                    case 'gotoP4TTicket': {
+                        event.target.title = 'P4T: Ticket "'+event.userInfo+'"';
+                        break;
+                    }
+                    
+                    case 'gotoAgileZENCard': {
+                        event.target.title = 'P4T: Zen Card "'+event.userInfo+'"';
+                        break;
+                    }
+                }
+            }     
         </script>
     </head>
     <body></body>
