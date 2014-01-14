@@ -7,29 +7,40 @@
             safari.application.addEventListener('message', handleMessage, false);
 
             function performCommand(event) {
+                var message = '';
+                
                 switch(event.command){
                     case 'gotoP4TTicket': {
-                        safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('getSelectedTextForP4TTicket',' ');
+                        message = 'getSelectedTextForP4TTicket';
+                        break;
                     }
                     
                     case 'gotoAgileZENCard': {
-                        safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('getSelectedTextForAgileZENCard',' ');
+                        message = 'getSelectedTextForAgileZENCard';
+                        break;
                     }
                 }
+                
+                safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(message, '');
             }
 
+
             function handleMessage(msg) {
+                var url = '';
+                
                 switch(msg.name){
                     case 'theSelectionForP4TTicket': {
-                        safari.application.activeBrowserWindow.openTab().url = 'https://www.pool4tool.com/tickets/index.php?controller=ticketByID&doNotRedirectToP4T=true&id='+msg.message;
+                        url = 'https://www.pool4tool.com/tickets/index.php?controller=ticketByID&doNotRedirectToP4T=true&id='+msg.message;
                         break;
                     }
                     
                     case 'theSelectionForAgileZenCard': {
-                        safari.application.activeBrowserWindow.openTab().url = 'https://agilezen.com/project/26520/story/'+msg.message+'/';
+                        url = 'https://agilezen.com/project/26520/story/'+msg.message+'/';
                         break;
                     }
-                }                
+                }        
+                
+                safari.application.activeBrowserWindow.openTab().url = url;      
             }            
         </script>
     </head>
