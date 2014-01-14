@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>
+        
+            safari.application.addEventListener('command', performCommand, false);
+            safari.application.addEventListener('message', handleMessage, false);
+
+            function performCommand(event) {
+                switch(event.command){
+                    case 'gotoP4TTicket': {
+                        safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('getSelectedTextForP4TTicket',' ');
+                    }
+                    
+                    case 'gotoAgileZENCard': {
+                        safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('getSelectedTextForAgileZENCard',' ');
+                    }
+                }
+            }
+
+            function handleMessage(msg) {
+                switch(msg.name){
+                    case 'theSelectionForP4TTicket': {
+                        safari.application.activeBrowserWindow.openTab().url = 'https://www.pool4tool.com/tickets/index.php?controller=ticketByID&doNotRedirectToP4T=true&id='+msg.message;
+                        break;
+                    }
+                    
+                    case 'theSelectionForAgileZenCard': {
+                        safari.application.activeBrowserWindow.openTab().url = 'https://agilezen.com/project/26520/story/'+msg.message+'/';
+                        break;
+                    }
+                }                
+            }            
+        </script>
+    </head>
+    <body></body>
+</html>
