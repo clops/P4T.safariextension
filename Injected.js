@@ -2,7 +2,13 @@
      *  @author Alexey Kulikov <clops>
      **/
      
-    function handleMessage(msg) {
+    function getSelectedText() {
+        var sel = window.getSelection()+'';
+        sel.replace(/^\s+|\s+$/g,""); //trim
+        return sel;
+    }
+
+    safari.self.addEventListener("message", function(msg){
         var sel = getSelectedText();
         
         //push the selection to the global scope
@@ -19,18 +25,8 @@
                 break;  
             }            
         }
-    }
+    }, false);
     
-    function handleSelectedText(msg) {
-        var sel = getSelectedText();
-        safari.self.tab.setContextMenuEventUserInfo(msg, sel);
-    }
-    
-    function getSelectedText() {
-        var sel = window.getSelection()+'';
-        sel.replace(/^\s+|\s+$/g,""); //trim
-        return sel;
-    }
-
-    safari.self.addEventListener("message", handleMessage, false);
-    document.addEventListener("contextmenu", handleSelectedText, false);
+    document.addEventListener("contextmenu", function(msg){
+        safari.self.tab.setContextMenuEventUserInfo(msg, getSelectedText());
+    }, false);
